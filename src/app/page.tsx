@@ -11,7 +11,10 @@ import { useState } from "react";
     const newTask = "새 할 일";
     setTasks([...tasks, newTask]);
   };
-
+const deleteTask = (index: number) => {
+  const newTasks = tasks.filter((_, i) => i !== index);
+  setTasks(newTasks);
+};
   return (
     <main style={{
       padding: "40px",
@@ -42,28 +45,41 @@ import { useState } from "react";
         <h2>📚 오늘 할 일</h2>
 
         <div style={{ marginTop: "10px" }}>
-          {tasks.map((task, index) => (
-            <p key={index}>✔ {task}</p>
-          ))}
-        </div>
+  {tasks.map((task, index) => (
+    <div key={index} style={{ display: "flex", gap: "10px" }}>
+      <p>✔ {task}</p>
+      <button
+        onClick={() => deleteTask(index)}
+        style={{
+          backgroundColor: "red",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          padding: "2px 8px",
+          cursor: "pointer"
+        }}
+      >
+        삭제
+      </button>
+    </div>
+  ))}
+</div>
 
-        <button
-          onClick={addTask}
-          style={{
-            marginTop: "20px",
-            padding: "10px 15px",
-            backgroundColor: "black",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer"
-          }}
-        >
-          + 할 일 추가
-        </button>
-
-      </div>
-
+<button
+  onClick={addTask}
+  style={{
+    marginTop: "20px",
+    padding: "10px 15px",
+    backgroundColor: "black",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer"
+  }}
+>
+  + 할 일 추가
+</button>
+    </div>
     </main>
   );
 }
