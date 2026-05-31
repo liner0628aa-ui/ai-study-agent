@@ -6,10 +6,11 @@ import { useState } from "react";
     "영어 단어",
     "운동 1시간"
   ]);
-
+const [input, setinput] = useState("");
+  
   const addTask = () => {
-    const newTask = "새 할 일";
-    setTasks([...tasks, newTask]);
+    setTasks([...tasks,input]);
+    setinput("");
   };
 const deleteTask = (index: number) => {
   const newTasks = tasks.filter((_, i) => i !== index);
@@ -64,7 +65,18 @@ const deleteTask = (index: number) => {
     </div>
   ))}
 </div>
-
+<input
+  value={input}
+  onChange={(e) => setinput(e.target.value)}
+  placeholder="할 일을 입력하세요"
+  style={{
+    padding: "10px",
+    width: "100%",
+    marginTop: "10px",
+    borderRadius: "8px",
+    border: "1px solid gray"
+  }}
+/>
 <button
   onClick={addTask}
   style={{
