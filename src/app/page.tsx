@@ -1,21 +1,62 @@
 "use client";
-import { useState } from "react";
- export default function Home() {
-  const [tasks, setTasks] = useState([
-    "수학 공부",
-    "영어 단어",
-    "운동 1시간"
-  ]);
-const [input, setinput] = useState("");
-  
+import { useState, useEffect } from "react";
+
+export default function Home() {
+  const [tasks, setTasks] = useState(() => {
+  const savedTasks = localStorage.getItem("tasks");
+
+  if (savedTasks) {
+    return JSON.parse(savedTasks);
+  }
+
+  return [
+    { text: "수학 공부", done: false },
+    { text: "영어 단어", done: false },
+    { text: "운동 1시간", done: false }
+  ];
+});
+  const [input, setinput] = useState("");
+
+ 
   const addTask = () => {
-    setTasks([...tasks,input]);
+    setTasks([
+  ...tasks,
+  {
+    text: input,
+    done: false
+  }
+]);
     setinput("");
   };
 const deleteTask = (index: number) => {
   const newTasks = tasks.filter((_, i) => i !== index);
   setTasks(newTasks);
 };
+const toggleTask = (index: number) => {
+  const newtasks = [...tasks];
+
+
+  newtasks[index].done = !newtasks[index].done;
+
+  setTasks(newtasks);
+};
+const completedCount = tasks.filter(
+  (task) => task.done
+).length;
+const percent =
+  tasks.length === 0
+    ? 0
+    : Math.round(
+        (completedCount / tasks.length) * 100
+      );
+
+      useEffect(() => {
+  localStorage.setItem(
+    "tasks",
+    JSON.stringify(tasks)
+  );
+}, [tasks]);
+
   return (
     <main style={{
       padding: "40px",
@@ -41,6 +82,17 @@ const deleteTask = (index: number) => {
           너의 공부 + 운동 + 습관 관리 시스템
         </p>
 
+        <p>
+  진행률: {completedCount} / {tasks.length}
+</p>
+
+<p>
+  달성률: {percent}%
+</p>
+
+<hr />
+
+
         <hr style={{ margin: "20px 0" }} />
 
         <h2>📚 오늘 할 일</h2>
@@ -48,7 +100,20 @@ const deleteTask = (index: number) => {
         <div style={{ marginTop: "10px" }}>
   {tasks.map((task, index) => (
     <div key={index} style={{ display: "flex", gap: "10px" }}>
-      <p>✔ {task}</p>
+      <p
+  style={{
+    textDecoration: task.done
+      ? "line-through"
+      : "none"
+  }}
+>
+  {task.text}
+</p>
+      <input
+  type="checkbox"
+  checked={task.done}
+  onChange={() => toggleTask(index)}
+/>
       <button
         onClick={() => deleteTask(index)}
         style={{
